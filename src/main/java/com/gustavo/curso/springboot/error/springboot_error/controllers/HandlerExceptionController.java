@@ -1,10 +1,13 @@
 package com.gustavo.curso.springboot.error.springboot_error.controllers;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -13,7 +16,7 @@ import com.gustavo.curso.springboot.error.springboot_error.models.Error;
 @RestControllerAdvice 
 public class HandlerExceptionController {
 
-    @ExceptionHandler({ArithmeticException.class})
+    @ExceptionHandler({ArithmeticException.class}) //Maneja excepciones con numeros y operaciones
     public ResponseEntity<?> divisionByZero(Exception ex){
         Error error = new Error();
         error.setDate(new Date());
@@ -24,7 +27,19 @@ public class HandlerExceptionController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(error); 
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler(NumberFormatException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> numberFormatException(Exception ex){
+       Map<String, Object> error = new HashMap<>();
+        error.put("date", new Date());
+        error.put("error", "numero invalido o incorrecto, no tiene formato de digito!");
+        error.put("message",ex.getMessage());
+        error.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        return error;
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class) //Meneja la excepcion del error 404
     public ResponseEntity<Error> notFoundEx(NoHandlerFoundException e){
         Error error = new Error();
         error.setDate(new Date());
