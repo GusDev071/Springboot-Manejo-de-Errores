@@ -1,8 +1,10 @@
 package com.gustavo.curso.springboot.error.springboot_error.services;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gustavo.curso.springboot.error.springboot_error.models.domain.User;
@@ -10,16 +12,8 @@ import com.gustavo.curso.springboot.error.springboot_error.models.domain.User;
 @Service 
 public class UserServiceImpl implements UserService {
 
+    @Autowired 
     public List<User> users;
-
-    public UserServiceImpl(){
-        this.users = new ArrayList<>();
-        users.add(new User(1L,"Pepe", "Gonzales"));
-        users.add(new User(2L,"Gustavo", "Flores"));
-        users.add(new User(3L,"Antonio", "Perez"));
-        users.add(new User(4L,"Alan", "Walker"));
-        users.add(new User(5L,"Pepito", "Gutierrez"));
-    }
 
     @Override
     public List<User> findAll() {
@@ -27,15 +21,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
-       User user = null;
-       for (User u : users) {
+    public Optional <User> findById(Long id) {
+       return users.stream().filter(usr -> usr.getId().equals(id)).findFirst();
+       /* for (User u : users) {
          if(u.getId().equals(id)){
             user = u;
             break;
          }
-       }
-       return user;
+       } *//* 
+       return Optional.ofNullable(user); */
     }
     
 }
